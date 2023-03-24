@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Validação de Certidão de Nascimento</title>
+	<script type="text/javascript">
+		function validarCertidaoBrasileira(certidao) {
+			var regex = /^(\d{6})\s(\d{2})\s(\d{2})\s(\d)\s(\d{5})\s(\d{3})\s(\d{7})\s(\d{2})$/;
+			if (!regex.test(certidao)) {
+				return false;
+			}
+			var nums = certidao.replace(/ /g, '');
+			var n1 = parseInt(nums.substr(0, 6));
+			var n2 = parseInt(nums.substr(6, 2));
+			var n3 = parseInt(nums.substr(8, 2));
+			var n4 = parseInt(nums.substr(10, 1));
+			var n5 = parseInt(nums.substr(11, 5));
+			var n6 = parseInt(nums.substr(16, 3));
+			var n7 = parseInt(nums.substr(19, 7));
+			var n8 = parseInt(nums.substr(26, 2));
+			var dv1 = calcularDigitoVerificador(n1, n2);
+			var dv2 = calcularDigitoVerificador(n5, n6, n7);
+			if (n3 != dv1 || n8 != dv2) {
+				return false;
+			}
+			return true;
+		}
+
+		function calcularDigitoVerificador() {
+			var nums = '';
+			for (var i = 0; i < arguments.length; i++) {
+				nums += arguments[i];
+			}
+			var soma = 0;
+			for (var i = 0; i < nums.length; i++) {
+				soma += parseInt(nums.charAt(i)) * (i % 8 + 2);
+			}
+			var dv = 11 - soma % 11;
+			return (dv == 10 || dv == 11) ? 0 : dv;
+		}
+
+		function validar() {
+			var certidao = document.getElementById("certidao").value;
+			var resultado = validarCertidaoBrasileira(certidao);
+			if (resultado) {
+				alert("Certidão de nascimento válida!");
+			} else {
+				alert("Certidão de nascimento invalida!");
+			}
+		}
+	</script>
+</head>
+<body>
+	<h1>Validação de Certidão de Nascimento</h1>
+	<p>Insira a certidão de nascimento:</p>
+	<input type="text" id="certidao">
+	<button onclick="validar()">Validar</button>
+</body>
+</html>
+<!-- Ajustar para certidão nova e antiga-->
